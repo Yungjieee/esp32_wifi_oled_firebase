@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>IoT Firebase Login</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 450px;
+            width: 90%;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="email"],
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #loginBtn {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        #signupBtn {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        #logoutBtn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        #updateBtn {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        #currentMsg {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+        }
+
+        .robot-img {
+            display: block;
+            margin: 0 auto 20px auto;
+            width: 300px;
+            /* You can adjust size */
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>IoT Message Control Panel</h2>
+
+        <div id="loginSection">
+            <img src="robot.png" alt="Cute Robot" class="robot-img">
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <button id="loginBtn" onclick="login()">Login</button>
+            <p style="margin-top: 10px;">
+                Haven't signed up yet?
+                <a href="#" onclick="showSignup()">Click here</a>
+            </p>
+        </div>
+
+        <div id="appSection" style="display:none;">
+            <img src="robot1.png" alt="Cute Writting Robot" class="robot-img">
+            <textarea id="msgInput" placeholder="Update message..."></textarea>
+            <button id="updateBtn" onclick="updateMessage()">Update Message</button>
+            <button id="logoutBtn" onclick="logout()">Logout</button>
+            <div id="currentMsg"><strong>Current message:</strong> <span id="liveText">Loading...</span></div>
+        </div>
+
+        <div id="signupSection" style="display:none;">
+            <img src="robot2.png" alt="Cute Robot" class="robot-img">
+            <input type="email" id="signupEmail" placeholder="Email">
+            <input type="password" id="signupPassword" placeholder="Password">
+            <input type="password" id="signupConfirmPassword" placeholder="Confirm Password">
+            <button id="signupBtn" onclick="signup()">Sign Up</button>
+            <p style="margin-top: 10px;">
+                Already have an account?
+                <a href="#" onclick="showLogin()">Login here</a>
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        // 🔧 Replace with your Firebase credentials
+        const firebaseConfig = {
+            apiKey: "api",
+            databaseURL: "url",
+            projectId: "id",
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+        const msgRef = db.ref("/104/oled/message");
+
+        // Monitor auth state
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById("appSection").style.display = "block";
+                listenToMessage();
+            } else {
+                document.getElementById("loginSection").style.display = "block";
+                document.getElementById("appSection").style.display = "none";
+            }
+        });
+
+        function login() {
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    alert("Logged in!");
+                    // Force switch to app section manually
+                    document.getElementById("loginSection").style.display = "none";
+                    document.getElementById("appSection").style.display = "block";
+                    listenToMessage(); // Start Firebase listener
+                })
+                .catch(err => alert("Login failed: " + err.message));
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                // Clear input fields after logout
+                document.getElementById("email").value = "";
+                document.getElementById("password").value = "";
+            });
+        }
+
+        function showSignup() {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("signupSection").style.display = "block";
+            document.getElementById("appSection").style.display = "none";
+        }
+
+        function showLogin() {
+            document.getElementById("signupSection").style.display = "none";
+            document.getElementById("loginSection").style.display = "block";
+            document.getElementById("appSection").style.display = "none";
+        }
+
+        function signup() {
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value;
+            const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Email format check
+            if (!emailRegex.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            // Password match check
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters.");
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(() => {
+                    alert("Signup successful! You can now log in.");
+                    // Clear fields
+                    document.getElementById("signupEmail").value = "";
+                    document.getElementById("signupPassword").value = "";
+                    document.getElementById("signupConfirmPassword").value = "";
+                    // Go back to login page
+                    showLogin();
+                })
+                .catch(err => alert("Signup failed: " + err.message));
+        }
+
+
+        function updateMessage() {
+            const msg = document.getElementById("msgInput").value;
+            msgRef.set(msg)
+                .then(() => alert("Message updated!"))
+                .catch(err => alert("Failed to update: " + err.message));
+        }
+
+        function listenToMessage() {
+            msgRef.on("value", snapshot => {
+                document.getElementById("liveText").textContent = snapshot.val() || "(empty)";
+            });
+        }
+    </script>
+
+</body>
+
+</html>
