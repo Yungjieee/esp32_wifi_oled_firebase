@@ -24,7 +24,9 @@ const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   databaseURL: "YOUR_DATABASE_URL",
   projectId: "YOUR_PROJECT_ID"
-}; 
+};
+
+--
 
 ## 📸 UI Preview
 
@@ -33,5 +35,5 @@ const firebaseConfig = {
 | 🔐 **Login Section**     | ![Login]()                                          |
 | 👤 **Sign Up Section**   | ![Sign Up](./preview/signup.png)                                      |
 | 📝 **App Section**       | ![App](./preview/app.png)                                              |
-| 📶 **WiFi Config Page**  | ![WiFi Config](![image](https://github.com/user-attachments/assets/4d5d8e31-f9c1-4312-b958-863b074d724b)
+| 📶 **WiFi Config Page**  | ![image](https://github.com/user-attachments/assets/4d5d8e31-f9c1-4312-b958-863b074d724b
 )                              |
