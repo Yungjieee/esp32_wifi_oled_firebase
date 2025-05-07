@@ -11,6 +11,17 @@ It allows users to:
 
 --
 
+## 📸 UI Preview
+
+| Section             | Preview                                                                 |
+|---------------------|-------------------------------------------------------------------------|
+| 🔐 **Login Section**     | ![Login]()                                          |
+| 👤 **Sign Up Section**   | ![Sign Up](./preview/signup.png)                                      |
+| 📝 **App Section**       | ![App](./preview/app.png)                                              |
+| 📶 **WiFi Config Page**  | ![image](https://github.com/user-attachments/assets/4d5d8e31-f9c1-4312-b958-863b074d724b
+)                              |
+
+
 ## 🚀 How to Run the Web App
 ### 🛠️ Steps to Run:
 1. Clone or download this repository.
@@ -27,13 +38,3 @@ const firebaseConfig = {
 };
 
 --
-
-## 📸 UI Preview
-
-| Section             | Preview                                                                 |
-|---------------------|-------------------------------------------------------------------------|
-| 🔐 **Login Section**     | ![Login]()                                          |
-| 👤 **Sign Up Section**   | ![Sign Up](./preview/signup.png)                                      |
-| 📝 **App Section**       | ![App](./preview/app.png)                                              |
-| 📶 **WiFi Config Page**  | ![image](https://github.com/user-attachments/assets/4d5d8e31-f9c1-4312-b958-863b074d724b
-)                              |
