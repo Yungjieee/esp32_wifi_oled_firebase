@@ -23,6 +23,7 @@ String scannedNetworks = "<p>Scanning...</p>";
 // Firebase credentials
 #define API_KEY "api"
 #define DATABASE_URL "url"
+
 String firebasePath = "/104/oled/message";
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -147,6 +148,10 @@ void connectWiFi() {
   }
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("\nWiFi connected!");
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.println("WiFi connected!");
+    display.display();
   } else {
     Serial.println("\nWiFi failed. AP mode.");
     enterAPMode();
@@ -159,7 +164,7 @@ void initFirebase() {
   config.database_url = DATABASE_URL;
 
   auth.user.email = "yungjielee@gmail.com";
-  auth.user.password = "password";
+  auth.user.password = "pass";
 
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
