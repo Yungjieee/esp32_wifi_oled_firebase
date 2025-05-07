@@ -17,4 +17,11 @@ It allows users to:
 2. Open the folder in **VS Code**.
 3. Install the Live Server extension (by Ritwick Dey).
 4. Open `index.html`, right-click, and choose: Open with Live Server
-5. 5. The app should open at: http://127.0.0.1:5500/
+5. The app should open at: http://127.0.0.1:5500/
+6. Replace the your own Firebase config in `index.html`:
+```javascript
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID"
+}; 
