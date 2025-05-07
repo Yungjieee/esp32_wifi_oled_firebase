@@ -11,17 +11,6 @@ It allows users to:
 
 --
 
-## 📸 UI Preview
-
-| Section             | Preview                                                                 |
-|---------------------|-------------------------------------------------------------------------|
-| 🔐 **Login Section**     | ![Login]()                                          |
-| 👤 **Sign Up Section**   | ![Sign Up](./preview/signup.png)                                      |
-| 📝 **App Section**       | ![App](./preview/app.png)                                              |
-| 📶 **WiFi Config Page**  | ![image](https://github.com/user-attachments/assets/4d5d8e31-f9c1-4312-b958-863b074d724b
-)                              |
-
-
 ## 🚀 How to Run the Web App
 ### 🛠️ Steps to Run:
 1. Clone or download this repository.
@@ -29,12 +18,10 @@ It allows users to:
 3. Install the Live Server extension (by Ritwick Dey).
 4. Open `index.html`, right-click, and choose: Open with Live Server
 5. The app should open at: http://127.0.0.1:5500/
-6. Replace the your own Firebase config in `index.html`:
+6. Replace your own Firebase config in `index.html`:
 ```javascript
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   databaseURL: "YOUR_DATABASE_URL",
   projectId: "YOUR_PROJECT_ID"
 };
-
---
