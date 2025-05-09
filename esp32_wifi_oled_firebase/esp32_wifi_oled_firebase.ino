@@ -150,7 +150,7 @@ void connectWiFi() {
     Serial.println("\nWiFi connected!");
     display.clearDisplay();
     display.setCursor(0, 0);
-    display.println("WiFi connected!");
+    display.println("WiFi " +ssid+ " connected!");
     display.display();
   } else {
     Serial.println("\nWiFi failed. AP mode.");
@@ -164,7 +164,7 @@ void initFirebase() {
   config.database_url = DATABASE_URL;
 
   auth.user.email = "yungjielee@gmail.com";
-  auth.user.password = "pass";
+  auth.user.password = "password";
 
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
@@ -385,7 +385,60 @@ void enterAPMode() {
     String pass = server.arg("password");
     String devid = server.arg("devid");
     writeEEPROM(ssid, pass, devid);
-    server.send(200, "text/html", "<h2>Settings Saved Successfully</h2><p>The device will now restart to apply the new configuration.</p>");
+    server.send(200, "text/html", R"rawliteral(
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Settings Saved</title>
+          <style>
+            body {
+              font-family: 'Segoe UI', sans-serif;
+              text-align: center;
+              background-color: #f4f4f4;
+              padding: 40px;
+            }
+            .box {
+              background: white;
+              padding: 30px;
+              margin: auto;
+              max-width: 400px;
+              border-radius: 12px;
+              box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            h2 {
+              color: #28a745;
+            }
+            p {
+              font-size: 16px;
+              margin-top: 10px;
+            }
+            .loader {
+              margin-top: 20px;
+              border: 6px solid #f3f3f3;
+              border-top: 6px solid #3498db;
+              border-radius: 50%;
+              width: 40px;
+              height: 40px;
+              animation: spin 1s linear infinite;
+              margin-left: auto;
+              margin-right: auto;
+            }
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="box">
+            <h2>✅ Settings Saved Successfully</h2>
+            <p>The device will now restart to apply the new configuration.</p>
+            <div class="loader"></div>
+          </div>
+        </body>
+        </html>
+      )rawliteral");
     delay(2000);
     digitalWrite(2, LOW);  // Turn off LED before restart
     ESP.restart();
@@ -394,7 +447,60 @@ void enterAPMode() {
   // Route to clear all EEPROM data
   server.on("/clear", []() {
     clearData();
-    server.send(200, "text/html", "<h2>All Data Cleared</h2><p>The device will restart now. Please reconnect and reconfigure if needed.</p>");
+    server.send(200, "text/html", R"rawliteral(
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Data Cleared</title>
+          <style>
+            body {
+              font-family: 'Segoe UI', sans-serif;
+              text-align: center;
+              background-color: #f4f4f4;
+              padding: 40px;
+            }
+            .box {
+              background: white;
+              padding: 30px;
+              margin: auto;
+              max-width: 400px;
+              border-radius: 12px;
+              box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            h2 {
+              color: #dc3545;
+            }
+            p {
+              font-size: 16px;
+              margin-top: 10px;
+            }
+            .loader {
+              margin-top: 20px;
+              border: 6px solid #f3f3f3;
+              border-top: 6px solid #dc3545;
+              border-radius: 50%;
+              width: 40px;
+              height: 40px;
+              animation: spin 1s linear infinite;
+              margin-left: auto;
+              margin-right: auto;
+            }
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="box">
+            <h2>🗑️ All Data Cleared</h2>
+            <p>The device will restart now. Please reconnect and reconfigure if needed.</p>
+            <div class="loader"></div>
+          </div>
+        </body>
+        </html>
+      )rawliteral");
     delay(2000);
     ESP.restart();
   });
